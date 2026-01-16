@@ -1,148 +1,191 @@
-/* --- TIMELINE HORIZONTAL --- */
+/* =========================================
+   1. VARIABLES Y TEMAS (COLORES PASTEL)
+   ========================================= */
+:root {
+    --bg-color: #ffe6e9; 
+    --text-color: #4a4a4a;
+    --card-bg: rgba(255, 255, 255, 0.95); /* Un poco más sólido */
+    --timeline-bar: linear-gradient(to bottom, #ff9a9e, #fad0c4, #a18cd1); /* Degradado Vertical */
+    --accent: #ff4757; 
+}
+
+[data-theme="night"] {
+    --bg-color: #2c3e50;
+    --text-color: #ecf0f1;
+    --card-bg: rgba(44, 62, 80, 0.95);
+    --timeline-bar: linear-gradient(to bottom, #4facfe, #00f2fe);
+    --accent: #00d2d3; 
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Nunito', sans-serif;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    margin: 0;
+    overflow-x: hidden; 
+}
+
+/* Fuentes */
+h1, h2, h3, .t-date, .polaroid p { font-family: 'Dancing Script', cursive; }
+
+/* =========================================
+   2. BOTONES Y UTILIDADES
+   ========================================= */
+.float-btn {
+    position: fixed; top: 20px; right: 20px; z-index: 1000;
+    padding: 10px 15px; border-radius: 50px; border: none; cursor: pointer;
+    background: var(--card-bg); color: var(--text-color);
+    font-size: 1.2rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+.float-btn:hover { transform: scale(1.1); }
+
+.hero { text-align: center; padding: 40px 20px; }
+h1 { font-size: 3rem; margin-bottom: 10px; }
+h2 { text-align: center; margin-top: 40px; font-size: 2.5rem; }
+
+.counter-box { font-size: 1.2rem; margin: 20px 0; }
+.confetti { position: fixed; z-index: 9999; font-size: 2rem; animation: fall linear forwards; }
+@keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+.navigate-btn-container { text-align: center; margin: 60px 0; padding-bottom: 40px; }
+.navigate-btn-container a { text-decoration: none; color: var(--accent); font-size: 1.5rem; }
+
+/* =========================================
+   3. TIMELINE VERTICAL (ZIG-ZAG)
+   ========================================= */
 .timeline-section {
+    position: relative;
     padding: 50px 0;
-    overflow: hidden; /* Oculta barras feas */
-    position: relative;
+    max-width: 1000px; /* Ancho máximo para mantener el orden */
+    margin: 0 auto;
 }
 
-.horizontal-scroll-container {
-    overflow-x: auto; /* Permite deslizar a los lados */
-    padding: 40px 20px;
-    white-space: nowrap; /* Mantiene todo en una línea */
-    -webkit-overflow-scrolling: touch; /* Suavidad en móviles */
-    position: relative;
-    min-height: 500px; /* Altura suficiente para polaroids */
-    display: flex;
-    align-items: center;
-}
+/* Ocultamos scroll horizontal antiguo */
+.horizontal-scroll-container { display: block; overflow: visible; padding: 0; }
 
-/* La línea gruesa */
+/* LA BARRA VERTICAL */
 .timeline-line {
     position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%; /* Ojo: esto crecerá con JS si es necesario */
-    height: 8px; /* Grosor de la línea */
-    background: var(--timeline-line);
+    top: 0; bottom: 0; left: 50%; 
+    width: 6px; 
+    background: var(--timeline-bar);
+    transform: translateX(-50%);
     border-radius: 4px;
     z-index: 0;
 }
 
+/* Contenedor de items */
 .timeline-items {
     display: flex;
-    gap: 150px; /* Espacio entre cada fecha */
-    padding: 0 50px; /* Margen inicial y final */
+    flex-direction: column;
+    gap: 350px; /* ESPACIO GRANDE para que quepan las fotos */
+    padding-top: 100px;
+    padding-bottom: 100px;
+    align-items: center;
     position: relative;
     z-index: 1;
 }
 
+/* El Punto Central */
 .t-item {
     position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    width: 20px;
-    height: 20px;
+    width: 20px; height: 20px;
     background: var(--accent);
+    border: 4px solid #fff;
     border-radius: 50%;
     cursor: pointer;
     transition: transform 0.3s;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
+.t-item:hover { transform: scale(1.5); background: #fff; border-color: var(--accent); }
 
-.t-item:hover {
-    transform: scale(1.5); /* Crece el puntito al pasar el mouse */
-}
-
-/* Fecha debajo del punto */
+/* FECHA (Siempre visible) */
 .t-date {
     position: absolute;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: -40px;
+    width: 200px;
+    text-align: center;
+    left: 50%; transform: translateX(-50%);
+    font-size: 1.6rem;
     font-weight: bold;
-    color: var(--text-color);
-    font-family: 'Dancing Script', cursive;
-    font-size: 1.2rem;
+    color: var(--accent);
+    text-shadow: 2px 2px 0px rgba(255,255,255,0.8);
 }
 
-/* BURBUJA DE TEXTO (Mensaje flotante) */
+/* MENSAJE (Burbuja) */
 .t-message {
     position: absolute;
-    bottom: 40px; /* Encima del punto */
-    left: 50%;
-    transform: translateX(-50%) scale(0); /* Oculto inicialmente */
-    background: #fff;
-    color: #333;
-    padding: 15px;
+    top: 40px; /* Debajo del punto */
+    left: 50%; transform: translateX(-50%) scale(0);
+    background: var(--card-bg);
+    color: var(--text-color);
+    padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    width: 200px;
-    white-space: normal; /* Permite saltos de línea */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    width: 250px;
     text-align: center;
-    font-size: 0.9rem;
     transition: transform 0.3s ease;
-    pointer-events: none; /* Para que no moleste al click */
+    z-index: 20;
+    pointer-events: none;
 }
+.t-item:hover .t-message { transform: translateX(-50%) scale(1); }
 
-/* El triangulito de la burbuja */
-.t-message::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    margin-left: -10px;
-    border-width: 10px;
-    border-style: solid;
-    border-color: #fff transparent transparent transparent;
-}
-
-/* Mostrar burbuja al pasar el mouse por el punto */
-.t-item:hover .t-message {
-    transform: translateX(-50%) scale(1);
-}
-
-/* LAS POLAROIDS (Conectadas al punto) */
+/* GRUPO DE FOTOS */
 .polaroid-group {
     position: absolute;
-    top: -280px; /* Subimos las fotos */
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
-    gap: 10px;
-    pointer-events: auto; /* Permitir click en fotos */
+    flex-wrap: wrap;
+    gap: 20px;
+    top: -50px; /* Alineadas con el punto */
+    width: 400px; /* Espacio reservado para fotos */
+    justify-content: center;
 }
 
-/* Si hay muchas fotos, las alternamos arriba/abajo con JS o CSS */
+/* =========================================
+   LÓGICA ZIG-ZAG (Izquierda / Derecha)
+   ========================================= */
+
+/* --- PARES: Fotos a la DERECHA --- */
 .t-item:nth-child(even) .polaroid-group {
-    top: 60px; /* Las pares van abajo de la línea */
+    left: 60px; /* Empiezan a la derecha del punto */
 }
-.t-item:nth-child(even) .t-message {
-    bottom: unset; 
-    top: 40px; /* Burbuja abajo también */
-}
-.t-item:nth-child(even) .t-message::after {
-    bottom: unset;
-    top: -10px;
-    border-color: transparent transparent #fff transparent;
+/* --- IMPARES: Fotos a la IZQUIERDA --- */
+.t-item:nth-child(odd) .polaroid-group {
+    right: 60px; /* Empiezan a la izquierda del punto */
+    flex-direction: row-reverse; /* Para que la foto más cercana al centro sea la primera */
 }
 
-/* Estilo Polaroid */
+/* =========================================
+   ESTILO POLAROIDS
+   ========================================= */
 .mini-polaroid {
-    background: white;
-    padding: 10px 10px 25px 10px; /* Más padding abajo */
+    width: 140px;
+    background: #fff;
+    padding: 8px 8px 30px 8px; /* Borde inferior tipo polaroid */
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    width: 150px;
+    transform: rotate(var(--rot));
     transition: transform 0.3s, z-index 0.3s;
-    transform: rotate(var(--rot)); /* Rotación aleatoria */
 }
-
 .mini-polaroid img, .mini-polaroid video {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 2px;
+    width: 100%; height: auto; display: block; border-radius: 2px;
+}
+.mini-polaroid:hover {
+    transform: scale(1.4) rotate(0deg) !important;
+    z-index: 100;
+    position: relative;
 }
 
-.mini-polaroid:hover {
-    transform: scale(1.2) rotate(0deg) !important;
-    z-index: 100;
+/* =========================================
+   CASO ESPECIAL: 13 DE SEPTIEMBRE
+   (Texto visible siempre si no hay fotos)
+   ========================================= */
+.t-item.solo-texto .t-message {
+    transform: translateX(-50%) scale(1); /* Siempre visible */
+    background: var(--accent); /* Fondo destacado */
+    color: #fff;
+    font-size: 1.1rem;
+    width: 300px;
 }
+/* Flechita del mensaje especial */
+.t-item.solo-texto .t-message::after { border-color: transparent transparent var(--accent) transparent; }
