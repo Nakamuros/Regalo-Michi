@@ -1,0 +1,148 @@
+/* --- TIMELINE HORIZONTAL --- */
+.timeline-section {
+    padding: 50px 0;
+    overflow: hidden; /* Oculta barras feas */
+    position: relative;
+}
+
+.horizontal-scroll-container {
+    overflow-x: auto; /* Permite deslizar a los lados */
+    padding: 40px 20px;
+    white-space: nowrap; /* Mantiene todo en una línea */
+    -webkit-overflow-scrolling: touch; /* Suavidad en móviles */
+    position: relative;
+    min-height: 500px; /* Altura suficiente para polaroids */
+    display: flex;
+    align-items: center;
+}
+
+/* La línea gruesa */
+.timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%; /* Ojo: esto crecerá con JS si es necesario */
+    height: 8px; /* Grosor de la línea */
+    background: var(--timeline-line);
+    border-radius: 4px;
+    z-index: 0;
+}
+
+.timeline-items {
+    display: flex;
+    gap: 150px; /* Espacio entre cada fecha */
+    padding: 0 50px; /* Margen inicial y final */
+    position: relative;
+    z-index: 1;
+}
+
+.t-item {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.t-item:hover {
+    transform: scale(1.5); /* Crece el puntito al pasar el mouse */
+}
+
+/* Fecha debajo del punto */
+.t-date {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+    color: var(--text-color);
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+}
+
+/* BURBUJA DE TEXTO (Mensaje flotante) */
+.t-message {
+    position: absolute;
+    bottom: 40px; /* Encima del punto */
+    left: 50%;
+    transform: translateX(-50%) scale(0); /* Oculto inicialmente */
+    background: #fff;
+    color: #333;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    width: 200px;
+    white-space: normal; /* Permite saltos de línea */
+    text-align: center;
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+    pointer-events: none; /* Para que no moleste al click */
+}
+
+/* El triangulito de la burbuja */
+.t-message::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    margin-left: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+}
+
+/* Mostrar burbuja al pasar el mouse por el punto */
+.t-item:hover .t-message {
+    transform: translateX(-50%) scale(1);
+}
+
+/* LAS POLAROIDS (Conectadas al punto) */
+.polaroid-group {
+    position: absolute;
+    top: -280px; /* Subimos las fotos */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    pointer-events: auto; /* Permitir click en fotos */
+}
+
+/* Si hay muchas fotos, las alternamos arriba/abajo con JS o CSS */
+.t-item:nth-child(even) .polaroid-group {
+    top: 60px; /* Las pares van abajo de la línea */
+}
+.t-item:nth-child(even) .t-message {
+    bottom: unset; 
+    top: 40px; /* Burbuja abajo también */
+}
+.t-item:nth-child(even) .t-message::after {
+    bottom: unset;
+    top: -10px;
+    border-color: transparent transparent #fff transparent;
+}
+
+/* Estilo Polaroid */
+.mini-polaroid {
+    background: white;
+    padding: 10px 10px 25px 10px; /* Más padding abajo */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 150px;
+    transition: transform 0.3s, z-index 0.3s;
+    transform: rotate(var(--rot)); /* Rotación aleatoria */
+}
+
+.mini-polaroid img, .mini-polaroid video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+}
+
+.mini-polaroid:hover {
+    transform: scale(1.2) rotate(0deg) !important;
+    z-index: 100;
+}
