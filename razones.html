@@ -3,25 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Razones por las que te amo</title>
+    <title>Razones por las que te amo ❤️</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Nunito:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Nunito:wght@300;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     
-    <header class="hero small-hero">
-        <h1>Razones por las que te amo</h1>
-        <a href="index.html" class="btn-back">⬅ Volver al inicio</a>
-    </header>
+    <button id="theme-toggle" class="float-btn">🌙 / ☀️</button>
 
-    <div class="grid-razones">
-        <div class="card">1. Porque siempre me apoyas en mis proyectos locos.</div>
-        <div class="card">2. Por como me miras cuando crees que no me doy cuenta.</div>
-        <div class="card">3. Por tu paciencia cuando me pongo "nerd" con Linux.</div>
-        <div class="card">4. Porque eres mi mejor amiga.</div>
-        <div class="card">5. Por tu risa contagiosa.</div>
-        <div class="card">6. Porque haces que el mundo sea más bonito.</div>
+    <div class="split-screen">
+        
+        <div class="left-pane">
+            <header class="razones-header">
+                <a href="index.html" class="btn-back">⬅ Volver</a>
+                <h1>Por todo esto te amo...</h1>
+            </header>
+
+            <div class="razones-grid" id="gridRazones">
+                </div>
         </div>
 
-    <script src="js/main.js"></script> </body>
+        <div class="right-pane" id="flyingArea">
+            </div>
+
+    </div>
+
+    <script>
+        // 1. TU LISTA DE RAZONES
+        const listaRazones = [
+            "Tu...", "Tu altura", "Tu carita", "Tu cabello", "Tus ojos", 
+            "Tus labios", "Tu sonrisa", "Tus manos", "Tu olor", "Tu voz", 
+            "Tus risas", "La manera en que me miras", "Tus besos", "Tus abrazos", 
+            "Tu personalidad", "Tu forma de ser", "Tu humor tan amplio", "Tu locura", 
+            "Tu lado sensible", "Tu ternura", "Tu creatividad", "Tu inteligencia", 
+            "Tus pensamientos", "Tus gustos tan variados", "Tu seriedad", "Tu paciencia", 
+            "Tu honestidad", "Tu responsabilidad", "Tu esfuerzo", "Tu ambición", 
+            "Tu valentía", "Tu confianza", "Tu atención", "Tu apoyo", "Tu compañía", 
+            "Tus mensajes", "Tu forma de amar", "Tus ataques de amor", "Tu nombre", 
+            "Tu Cuerpo", "Nuevamente tu ❤️"
+        ];
+
+        // 2. TUS FOTOS (Nombres de archivo que vi en tu captura)
+        // Agrega aquí las que quieras que salgan volando
+        const listaFotos = [
+            "michi1.jpeg", "michi2.jpeg", "michi3.jpeg", "michi4.jpeg",
+            "5 enero.jpeg", "7 enero.jpeg", "25 octubre3.jpeg", "15 noviembre.jpeg"
+        ];
+
+        // GENERAR RAZONES (Izquierda)
+        const containerRazones = document.getElementById('gridRazones');
+        listaRazones.forEach((razon, index) => {
+            const card = document.createElement('div');
+            card.className = 'reason-card';
+            // Animación de entrada escalonada
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.innerHTML = `
+                <div class="reason-number">#${index + 1}</div>
+                <div class="reason-text">${razon}</div>
+            `;
+            containerRazones.appendChild(card);
+        });
+
+        // GENERAR FOTOS VOLADORAS (Derecha)
+        const containerFotos = document.getElementById('flyingArea');
+        
+        listaFotos.forEach((foto) => {
+            const polaroid = document.createElement('div');
+            polaroid.className = 'flying-polaroid';
+            
+            // Posiciones aleatorias
+            const randomLeft = Math.random() * 60 + 10; // Entre 10% y 70% del ancho
+            const randomDuration = Math.random() * 10 + 10; // Entre 10s y 20s de flotación
+            const randomDelay = Math.random() * 5; // Retraso inicial
+            const randomRot = (Math.random() * 30) - 15; // Rotación
+
+            polaroid.style.left = `${randomLeft}%`;
+            polaroid.style.animationDuration = `${randomDuration}s`;
+            polaroid.style.animationDelay = `-${randomDelay}s`; // Negativo para que empiecen ya movidas
+            polaroid.style.transform = `rotate(${randomRot}deg)`;
+
+            polaroid.innerHTML = `<img src="img/${foto}" alt="Nosotros">`;
+            containerFotos.appendChild(polaroid);
+        });
+
+        // LÓGICA DE TEMA (Copiada del main para que funcione aquí también)
+        const themeBtn = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        if(localStorage.getItem('theme') === 'night') { html.setAttribute('data-theme', 'night'); }
+        themeBtn.addEventListener('click', () => {
+            if(html.getAttribute('data-theme') === 'day') {
+                html.setAttribute('data-theme', 'night');
+                localStorage.setItem('theme', 'night');
+            } else {
+                html.setAttribute('data-theme', 'day');
+                localStorage.setItem('theme', 'day');
+            }
+        });
+    </script>
+</body>
 </html>
